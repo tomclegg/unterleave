@@ -62,13 +62,15 @@ func main() {
 		}
 	}()
 
+	outbuf := make([]byte, 0, int(int64(bufsize)/int64(frame)*int64(pass)))
+	outbuf2 := make([]byte, 0, int(int64(bufsize)/int64(frame)*int64(pass)))
 	for ; ; todo += mustRead(inbuf[todo:]) {
 		done := 0
-		outbuf := make([]byte, 0, int(int64(todo)/int64(frame)*int64(pass)))
 		for ; done+frame <= todo; done += frame {
 			outbuf = append(outbuf, inbuf[done+offset:done+offset+pass]...)
 		}
 		out <- outbuf
+		outbuf, outbuf2 = outbuf2[:0], outbuf
 
 		if done > 0 && done < todo {
 			copy(inbuf, inbuf[done:todo])
