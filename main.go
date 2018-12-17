@@ -56,6 +56,7 @@ func main() {
 	copy(inbuf[:todo], inbuf[skip:])
 
 	out := make(chan []byte)
+	defer close(out)
 	go func() {
 		for buf := range out {
 			mustWrite(buf)
